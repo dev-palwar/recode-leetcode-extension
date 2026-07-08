@@ -10,7 +10,7 @@ window.addEventListener("load", async () => {
     document.getElementById("apiEndpoint").value = settings.apiEndpoint;
   } else {
     document.getElementById("apiEndpoint").value =
-      "https://recode-leetcode.vercel.app/api/leetcode";
+      "https://recode.devpalwar.me/api/leetcode";
   }
 
   // Loads cached problems
@@ -42,12 +42,12 @@ async function fetchSolvedProblems() {
       "https://leetcode.com/api/problems/all/",
       {
         credentials: "include",
-      }
+      },
     );
 
     if (!profileResponse.ok) {
       throw new Error(
-        "Failed to fetch data. Make sure you are logged in to LeetCode."
+        "Failed to fetch data. Make sure you are logged in to LeetCode.",
       );
     }
 
@@ -55,7 +55,7 @@ async function fetchSolvedProblems() {
 
     // Filters solved problems
     const solvedProblems = data.stat_status_pairs.filter(
-      (problem) => problem.status === "ac"
+      (problem) => problem.status === "ac",
     );
 
     // Displays stats
@@ -76,7 +76,7 @@ async function fetchSolvedProblems() {
     } else {
       // Sorts by frontend_question_id
       solvedProblems.sort(
-        (a, b) => a.stat.frontend_question_id - b.stat.frontend_question_id
+        (a, b) => a.stat.frontend_question_id - b.stat.frontend_question_id,
       );
 
       solvedProblems.forEach((problem) => {
@@ -89,8 +89,8 @@ async function fetchSolvedProblems() {
         problemItem.innerHTML = `
           <div class="problem-title">
             ${problem.stat.frontend_question_id}. ${
-          problem.stat.question__title
-        }
+              problem.stat.question__title
+            }
           </div>
           <div class="problem-meta">
             <span class="${difficultyClass}">${difficulty}</span> |
@@ -158,7 +158,7 @@ async function exportToApp() {
         difficulty: getDifficultyText(p.difficulty.level),
         difficultyLevel: p.difficulty.level,
         acceptanceRate: parseFloat(
-          ((p.stat.total_acs / p.stat.total_submitted) * 100).toFixed(1)
+          ((p.stat.total_acs / p.stat.total_submitted) * 100).toFixed(1),
         ),
         totalAccepted: p.stat.total_acs,
         totalSubmissions: p.stat.total_submitted,
@@ -228,7 +228,7 @@ async function loadCachedProblems() {
       </div>
       <div class="stat-item">
         <span class="stat-label">Last Updated:</span> ${new Date(
-          data.lastFetched
+          data.lastFetched,
         ).toLocaleString()}
       </div>
     `;
