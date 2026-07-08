@@ -2,6 +2,7 @@ document
   .getElementById("fetchBtn")
   .addEventListener("click", fetchSolvedProblems);
 document.getElementById("exportBtn").addEventListener("click", exportToApp);
+document.getElementById("downloadCsvBtn").addEventListener("click", downloadCSV);
 
 // Loads API endpoint from storage
 window.addEventListener("load", async () => {
@@ -113,6 +114,7 @@ async function fetchSolvedProblems() {
 
     // Shows export button
     document.getElementById("exportBtn").style.display = "block";
+    document.getElementById("downloadCsvBtn").style.display = "block";
   } catch (error) {
     errorDiv.textContent = error.message;
     errorDiv.style.display = "block";
@@ -259,5 +261,50 @@ async function loadCachedProblems() {
 
     // Shows export button if data exists
     document.getElementById("exportBtn").style.display = "block";
+    document.getElementById("downloadCsvBtn").style.display = "block";
   }
+}
+
+async function downloadCSV() {
+  const data = await browser.storage.local.get(["solvedProblems"]);
+  if (!data.solvedProblems || data.solvedProblems.length === 0) return;
+
+  const headers = [
+    "ID",
+    "Title",
+    "Title Slug",
+    "Difficulty",
+    "Acceptance Rate",
+    "Total Accepted",
+    "Total Submissions",
+    "Paid Only"
+  ];
+
+  const csvRows = [headers.join(",")];
+
+  data.solvedProblems.forEach((p) => {
+    const row = [
+      p.stat.frontend_question_id,
+      `"${p.stat.question__title.replace(/"/g, '""')}"`,
+      p.stat.question__title_slug,
+      getDifficultyText(p.difficulty.level),
+      ((p.stat.total_acs / p.stat.total_submitted) * 100).toFixed(1) + "%",
+      p.stat.total_acs,
+      p.stat.total_submitted,
+      p.paid_only
+    ];
+    csvRows.push(row.join(","));
+  });
+
+  const csvString = csvRows.join("\n");
+  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "leetcode_solved_problems.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
