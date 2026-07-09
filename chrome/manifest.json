@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Recode",
+    "name": "Recode - Leetcode extension",
     "version": "2.0",
     "description": "Fetches your solved LeetCode problems",
     "permissions": [
